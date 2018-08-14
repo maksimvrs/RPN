@@ -16,13 +16,13 @@ int main() {
     std::getline(std::cin, input);
     std::cout << RPN::toRPN(input) << std::endl;
     return 0;
+}
 ```
 ### Building
 ```
 cmake ./
 make 
 ./RPN
-Enter an expression:
-( 6 - 3) ^2 - 11
-63-2^11
 ```
+### Example of work
+( 6 - 3) ^2 - 11 => 63-2^11
