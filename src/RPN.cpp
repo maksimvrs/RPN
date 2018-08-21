@@ -23,11 +23,14 @@ std::string RPN::toRPN(std::string expr)
     for(char &c : expr) {
         if(std::isdigit(c) || c == 'x' || c == 'y' || c == '!') {
             value += c;
+            if (!std::isdigit((&c)[1]))
+                value += ' ';
         } else if(stack.empty() || c == '(' || c == 's' || c == 'c') {
             stack.push(c);
         } else if(c == '^') {
             while(stack.top() == 's' || stack.top() == 'c' || stack.top() == '^') {
                 value += stack.top();
+                value += ' ';
                 stack.pop();
                 if (stack.empty()) break;
             }
@@ -36,6 +39,7 @@ std::string RPN::toRPN(std::string expr)
             while(stack.top() == '*' || stack.top() == '/' || stack.top() == '^' ||
                   stack.top() == 's' || stack.top() == 'c') {
                 value += stack.top();
+                value += ' ';
                 stack.pop();
                 if (stack.empty()) break;
             }
@@ -45,6 +49,7 @@ std::string RPN::toRPN(std::string expr)
                   stack.top() == '*' || stack.top() == '/' ||
                   stack.top() == '^' || stack.top() == 's' || stack.top() == 'c') {
                 value += stack.top();
+                value += ' ';
                 stack.pop();
                 if (stack.empty()) break;
             }
@@ -52,6 +57,7 @@ std::string RPN::toRPN(std::string expr)
         } else if (c == ')') {
             while(stack.top() != '(' && !stack.empty()) {
                 value += stack.top();
+                value += ' ';
                 stack.pop();
             }
             if (!stack.empty())
@@ -60,8 +66,10 @@ std::string RPN::toRPN(std::string expr)
     }
     while(!stack.empty()) {
         value += stack.top();
+        value += ' ';
         stack.pop();
     }
+    value.pop_back();
     return value;
 }
 

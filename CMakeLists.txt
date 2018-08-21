@@ -3,6 +3,6 @@ project(RPN)
 
 set(CMAKE_CXX_STANDARD 14)
 
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_HOME_DIRECTORY}/build)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_HOME_DIRECTORY})
 
 add_executable(RPN main.cpp src/RPN.cpp src/RPN.hpp)
