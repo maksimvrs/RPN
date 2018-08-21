@@ -1,7 +1,3 @@
-//
-// Created by Maksim Vorontsov on 14.08.2018.
-//
-
 #ifndef RPN_RPN_HPP
 #define RPN_RPN_HPP
 
@@ -20,6 +16,8 @@ public:
     static std::string toRPN(std::string);
     std::string convert();
     std::string getRPNExpr();
+    float calculate(float, float);
+    float (*getFunction())(float, float);
 
 private:
     std::string m_expr;

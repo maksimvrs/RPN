@@ -2,6 +2,7 @@
 #include <regex>
 #include <stack>
 #include <cmath>
+#include <sstream> 
 
 #include "RPN.hpp"
 
@@ -88,4 +89,143 @@ std::string RPN::getRPNExpr()
 std::string RPN::convert()
 {
     return m_RPNExpr = toRPN(m_expr);
+}
+
+float RPN::calculate(float x, float y)
+{
+    std::stringstream input(m_RPNExpr);
+    std::string token;
+    std::stack<double> stack;
+    while (input >> token) {
+        if (token == "+") {
+			double a = stack.top();
+			stack.pop();
+			double b = stack.top();
+			stack.pop();
+			stack.push(a + b);
+		}
+		else if (token == "-") {
+			double a = stack.top();
+			stack.pop();
+			double b = stack.top();
+			stack.pop();
+			stack.push(b - a);
+		}
+		else if (token == "*") {
+			double a = stack.top();
+			stack.pop();
+			double b = stack.top();
+			stack.pop();
+			stack.push(a * b);
+		}
+		else if (token == "/") {
+			double a = stack.top();
+			stack.pop();
+			double b = stack.top();
+			stack.pop();
+			stack.push(b / a);
+		}
+        else if (token == "^") {
+            double a = stack.top();
+			stack.pop();
+			double b = stack.top();
+			stack.pop();
+			stack.push(pow(b, a));
+        }
+        else if (token == "s") {
+            double a = stack.top();
+			stack.pop();
+            stack.push(sin(a));
+        }
+        else if (token == "c") {
+            double a = stack.top();
+			stack.pop();
+            stack.push(cos(a));
+        }
+        else if (token == "x") {
+            stack.push(x);
+        }
+        else if (token == "y") {
+            stack.push(y);
+        }
+		else {
+			float num = std::stoi(token);
+	        stack.push(num);
+		}
+    }
+    if(stack.size() != 1)
+        throw 1;
+    return stack.top();
+}
+
+float (*RPN::getFunction())(float, float)
+{
+    const std::string expr = m_RPNExpr;
+    auto func = [this](float x, float y) -> float {
+        std::stringstream input(m_RPNExpr);
+        std::string token;
+        std::stack<double> stack;
+        while (input >> token) {
+            if (token == "+") {
+                double a = stack.top();
+                stack.pop();
+                double b = stack.top();
+                stack.pop();
+                stack.push(a + b);
+            }
+            else if (token == "-") {
+                double a = stack.top();
+                stack.pop();
+                double b = stack.top();
+                stack.pop();
+                stack.push(b - a);
+            }
+            else if (token == "*") {
+                double a = stack.top();
+                stack.pop();
+                double b = stack.top();
+                stack.pop();
+                stack.push(a * b);
+            }
+            else if (token == "/") {
+                double a = stack.top();
+                stack.pop();
+                double b = stack.top();
+                stack.pop();
+                stack.push(b / a);
+            }
+            else if (token == "^") {
+                double a = stack.top();
+                stack.pop();
+                double b = stack.top();
+                stack.pop();
+                stack.push(pow(b, a));
+            }
+            else if (token == "s") {
+                double a = stack.top();
+                stack.pop();
+                stack.push(sin(a));
+            }
+            else if (token == "c") {
+                double a = stack.top();
+                stack.pop();
+                stack.push(cos(a));
+            }
+            else if (token == "x") {
+                stack.push(x);
+            }
+            else if (token == "y") {
+                stack.push(y);
+            }
+            else {
+                float num = std::stoi(token);
+                stack.push(num);
+            }
+        }
+        if (stack.size() != 1)
+            throw 1;
+        return stack.top();
+    };
+    static std::function<float(float, float)> staticFunc = func;
+    return [](float x, float y) { return staticFunc(x, y); };
 }
